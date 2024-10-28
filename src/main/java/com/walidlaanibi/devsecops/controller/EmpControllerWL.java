@@ -7,7 +7,9 @@ import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -38,10 +40,14 @@ public class EmpControllerWL {
         final EmpWL empfinal = empRepWL.save(emp);
         return ResponseEntity.ok().body(empfinal);
     }
-//    @DeleteMapping("/emp/{id}")
-//    public String delete(@PathVariable(value = "id") Long empId) {
-//        EmpWL emp = empRepWL.findById(empId);
-//        em
-//    }
+    @DeleteMapping("/emp/{id}")
+    public Map<String, Boolean> delete(@PathVariable(value = "id") Long empId) throws ResourceNotFoundException{
+        EmpWL emp = empRepWL.findById(empId)
+                .orElseThrow(() -> new ResourceNotFoundException("not found"));
+        empRepWL.delete(emp);
+        Map<String, Boolean> response = new HashMap<> ();
+        response.put("deleted", Boolean.TRUE);
+        return response;
+    }
 
 }
